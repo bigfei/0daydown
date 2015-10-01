@@ -55,6 +55,9 @@ ArticleSchema.statics = {
   },
   findByCategory: function(category){
     return this.find({category:category}).exec();
+  },
+  findArticlesWithoutBaidupanFiles: function(){
+    return this.find({'baidupan.0': {$exists: false}});
   }
 }
 
