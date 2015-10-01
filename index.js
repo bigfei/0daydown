@@ -22,7 +22,7 @@ mongoose.set('debug', function (coll, method, query, doc) {
  console.log(coll + " " + method + " " + JSON.stringify(query) + " " + JSON.stringify(doc));
 });
 
-/*for (var i = 0; i < browserNum; i++) {
+for (var i = 0; i < browserNum; i++) {
   (function(n) {
     var flow = new webdriver.promise.ControlFlow()
         .on('uncaughtException', function(e) {
@@ -46,8 +46,8 @@ mongoose.set('debug', function (coll, method, query, doc) {
 
     scrapeSite.down0DayFiles('http://www.0daydown.com/', offsetFrom + pages * i + 1, offsetFrom + pages * (i + 1));
   })(i);
-}*/
-
+}
+/*
 var chromeCaps = webdriver.Capabilities.chrome();
 chromeCaps.set('chromeOptions', {
   'prefs': {
@@ -66,17 +66,19 @@ scrapeSite.login0Day().then(function() {
 }).then(function(article) {
   return scrapeSite.saveArticle(article);
 }).then(function() {
-  Article.findByBaidupanUrl('http://pan.baidu.com/s/1lwcCe').then(function(art) {
-    console.log(art);
-    driver.get('http://www.0daydown.com/account');
-    driver.findElement(by.linkText('登出')).then(function(elem) {
-      elem.click();
-      driver.sleep(10 * 100);
-      driver.quit();
-      console.log("Closed");
-      mongoose.disconnect();
-    }, function() {});
-  })
+  console.log(art);
+  driver.get('http://www.0daydown.com/account');
+  driver.findElement(by.linkText('登出')).then(function(elem) {
+    elem.click();
+    driver.sleep(10 * 100);
+    driver.quit();
+    console.log("Closed");
+    mongoose.disconnect();
+  }, function() {});
 });
+/*Article.findByCategory('其他教程').then(function(art){
+  console.log(art);
+  mongoose.disconnect();
+})*/
 
 //

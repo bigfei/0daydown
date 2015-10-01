@@ -45,16 +45,16 @@ ArticleSchema.statics = {
   },
 
   findByTitle: function(title){
-    return this.find({title:new RegExp(title, 'i')});
+    return this.find({title:new RegExp(title, 'i')}).exec();
   },
 
   findByTitleOrContent: function(text){
     return this.find({
       $or: [{title: new RegExp(text, 'i')}, {content: new RegExp(text, 'i')}]
-    });
+    }).exec();
   },
   findByCategory: function(category){
-    return this.find({category:category})
+    return this.find({category:category}).exec();
   }
 }
 
