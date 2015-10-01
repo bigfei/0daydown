@@ -99,9 +99,13 @@ ScrapeSite.prototype.scrapeArticle = function(url) {
         return r != null && this.nodeType === 3;
       }).text().match(common_reg);
 
+      var pass = ''
+      if(p != null){
+        pass = p[3];
+      }
       var baiduPan = new BaiduPan(driver);
-      baiduPan.checkBaiduPanByApi(url, p[3] || '').then(function(filesData) {
-        o['baidupan'].push({'u': url, 'p': p[3], f: filesData.files, uk:filesData.uk, shareid:filesData.shareid});
+      baiduPan.checkBaiduPanByApi(url, pass).then(function(filesData) {
+        o['baidupan'].push({'u': url, 'p': pass, f: filesData.files, uk:filesData.uk, shareid:filesData.shareid});
       });
     })
     return o;
