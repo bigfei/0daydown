@@ -41,8 +41,22 @@ ArticleSchema.statics = {
   },
 
   findByBaidupanFilename: function(filename) {
-    return this.findOne({baidupan:{$elemMatch:{u: url}}}).exec();
+    return this.find({baidupan: {$elemMatch: {f: {$elemMatch: {filename: filename}}}}}).exec();
+  },
+
+  findByTitle: function(title){
+    return this.find({title:new RegExp(title, 'i')});
+  },
+
+  findByTitleOrContent: function(text){
+    return this.find({
+      $or: [{title: new RegExp(text, 'i')}, {content: new RegExp(text, 'i')}]
+    });
+  },
+  findByCategory: function(category){
+    return this.find({category:category})
   }
 }
 
-module.exports = mongoose.model('Article', ArticleSchema);;
+
+module.exports = mongoose.model('Article', ArticleSchema);
