@@ -10,11 +10,10 @@ var webdriver = require('selenium-webdriver'),
   humanFormat = require('human-format'),
   mongoose = require('mongoose'),
   BaiduPan = require('./lib/baidupan.js'),
-  ScrapeSite = require('./lib/scrape_site.js');
+  ScrapeSite = require('./lib/scrape_site.js'),
+  bluebird = require('bluebird');
 
-var phantomjsCaps = webdriver.Capabilities.phantomjs();
-phantomjsCaps.set('phantomjs.cli.args', ['--load-images=false'])
-
+mongoose.Promise = require('bluebird');
 var db = mongoose.connect(config.db);
 
 /*mongoose.set('debug', function (coll, method, query, doc) {
@@ -49,7 +48,10 @@ for (var i = 0; i < browserNum; i++) {
 
     scrapeSite.down0DayFiles('http://www.0daydown.com/', offsetFrom + pages * i + 1, offsetFrom + pages * (i + 1));
   })(i);
-}*/
+}
+
+var phantomjsCaps = webdriver.Capabilities.phantomjs();
+phantomjsCaps.set('phantomjs.cli.args', ['--load-images=false'])
 
 var chromeCaps = webdriver.Capabilities.chrome();
 chromeCaps.set('chromeOptions', {
@@ -83,8 +85,8 @@ scrapeSite.login0Day().then(function() {
     console.log("Closed");
     mongoose.disconnect();
   }, function() {});
-});
-Article.findArticlesWithoutBaidupanFiles().then(function(art){
+});*/
+Article.updateAlreadyExistedFiles(["opSySaH1212.part1.rar","opSySaH1212.part2.rar","How_It_Works_Annual_-_Volume_6_2015-P2P.rar"]).then(function(art){
   console.log(art.length);
   mongoose.disconnect();
-})*/
+})
