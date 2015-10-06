@@ -17,7 +17,7 @@ mongoose.Promise = require('bluebird');
 var db = mongoose.connect(config.db);
 
 mongoose.set('debug', function (coll, method, query, doc) {
- console.log(coll + " " + method + " " + JSON.stringify(query) + " " + JSON.stringify(doc));
+ //console.log(coll + " " + method + " " + JSON.stringify(query) + " " + JSON.stringify(doc));
 });
 
 var args = null;
@@ -49,21 +49,29 @@ var buildDriver = function(flow) {
 }
 
 var startScrape = function() {
-  var browserNum = args.browserNum, fromOffset = args.fromOffset, pages = args.pages
-  for (var i = 0; i < browserNum; i++) {
-    (function(n) {
-      var flow = new webdriver.promise.ControlFlow()
-        .on('uncaughtException', function(e) {
-          console.log('uncaughtException in flow %d: %s', n, e);
-        });
-      var driver = buildDriver(flow);
-      var scrapeSite = new ScrapeSite(driver);
-
-      scrapeSite.scrape0DayDownSite('http://www.0daydown.com/', fromOffset -1 + pages * i + 1, fromOffset -1 + pages * (i + 1)).then(function(){
-        mongoose.disconnect();
+  var browserNum = args.browserNum, fromOffset = args.fromOffset, pages = args.pages;
+  var allScrapes = [];
+  var createScrape = function(i) {
+    var flow = new webdriver.promise.ControlFlow()
+      .on('uncaughtException', function(e) {
+        console.log('uncaughtException in flow %d: %s', i, e);
+      }).on('idle', function() {
+        console.log("All tasks handled by ControlFlow(" + i + ") have been successfully executed.")
       });
-    })(i);
+    var driver = buildDriver(flow);
+    var scrapeSite = new ScrapeSite(driver);
+
+    return scrapeSite.scrape0DayDownSite('http://www.0daydown.com/', fromOffset - 1 + pages * i + 1, fromOffset - 1 + pages * (i + 1));
   }
+
+  for (var i = 0; i < browserNum; i++) {
+    allScrapes.push(createScrape(i));
+  }
+
+  return webdriver.promise.all(allScrapes).then(function() {
+    console.log("All browsers are closed, closing mongodb connection.")
+    mongoose.disconnect();
+  });
 }
 
 var startScrapeArticle = function(url) {
