@@ -59,7 +59,9 @@ var startScrape = function() {
       var driver = buildDriver(flow);
       var scrapeSite = new ScrapeSite(driver);
 
-      scrapeSite.scrape0DayDownSite('http://www.0daydown.com/', fromOffset -1 + pages * i + 1, fromOffset -1 + pages * (i + 1));
+      scrapeSite.scrape0DayDownSite('http://www.0daydown.com/', fromOffset -1 + pages * i + 1, fromOffset -1 + pages * (i + 1)).then(function(){
+        mongoose.disconnect();
+      });
     })(i);
   }
 }
