@@ -23,5 +23,11 @@ module.exports = {
   zerodaydown: {
     user: "",
     pass: ""
+  },
+
+  smbshare:{
+    user:'',
+    pass:'',
+    host:''
   }
 }
