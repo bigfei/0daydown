@@ -28,6 +28,7 @@ module.exports = {
   smbshare:{
     user:'',
     pass:'',
-    host:''
+    share:'',
+    domain:''
   }
 }
