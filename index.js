@@ -11,13 +11,14 @@ var webdriver = require('selenium-webdriver'),
   config = require('./config/config.js'),
   BaiduPan = require('./lib/baidupan.js'),
   ScrapeSite = require('./lib/scrape_site.js'),
-  parser = require('./lib/parser.js')();
+  parser = require('./lib/parser.js')(),
+  smbshare = require('./lib/smbshare.js');
 
 mongoose.Promise = require('bluebird');
 var db = mongoose.connect(config.db);
 
 mongoose.set('debug', function (coll, method, query, doc) {
- //console.log(coll + " " + method + " " + JSON.stringify(query) + " " + JSON.stringify(doc));
+ console.log(coll + " " + method + " " + JSON.stringify(query) + " " + JSON.stringify(doc));
 });
 
 var args = null;
@@ -27,6 +28,14 @@ if (require.main === module) {
 }
 
 console.log(args)
+
+if(args.article){
+  startScrapeArticle(args.article)
+}else if(args.updateSamba){
+  startUpdateSamba(args.updateSamba);
+}else{
+  startScrape();
+};
 
 var buildDriver = function(flow) {
   var phantomjsCaps = webdriver.Capabilities.phantomjs();
@@ -74,6 +83,11 @@ var startScrape = function() {
   });
 }
 
+var startUpdateSamba = function(path){
+  //smbshare.updateSambaFilename(path);
+  var filenames = smbshare.updateMongodbFilesExistence();
+  Article.updateFilesExistence(filenames, true);
+}
 var startScrapeArticle = function(url) {
   var chromeCaps = webdriver.Capabilities.chrome();
   chromeCaps.set('chromeOptions', {
@@ -98,8 +112,7 @@ var startScrapeArticle = function(url) {
   });
 }
 
-startScrape();
-//startScrapeArticle(args.article)
+//
 /*Article.updateFilesExistence(["opSySaH1212.part1.rar", "opSySaH1212.part2.rar", "How_It_Works_Annual_-_Volume_6_2015-P2P.rar"], false).then(function(art) {
   console.log(art);
   mongoose.disconnect();
