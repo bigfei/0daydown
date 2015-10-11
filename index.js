@@ -109,14 +109,15 @@ var startScrapeArticle = function(url) {
   });
 }
 
-
-if(args.article){
-  startScrapeArticle(args.article)
-}else if(args.updateSamba){
-  startUpdateSamba(args.updateSamba);
-}else{
-  startScrape();
-};
+if (args) {
+  if (args.article) {
+    startScrapeArticle(args.article)
+  } else if (args.updateSamba) {
+    startUpdateSamba(args.updateSamba);
+  } else {
+    startScrape();
+  };
+}
 
 //
 /*Article.updateFilesExistence(["opSySaH1212.part1.rar", "opSySaH1212.part2.rar", "How_It_Works_Annual_-_Volume_6_2015-P2P.rar"], false).then(function(art) {
